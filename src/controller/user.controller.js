@@ -1,38 +1,41 @@
-exports.getalluser = (req, res)=>{
+const Book = require("../model/book.model"); // Change it to 'Book' (Capital 'B')
+
+exports.getalluser = (req, res) => {
     res.send("get all user in home page")
 }
-// ------------          CRUD OPERATION         ------------------
-let posts = [
-    { id: 1, name: "Alice", title: "First Post" },
-    { id: 2, name: "Bob", title: "Node.js Tips" }
-];
+
 exports.getAllPosts = (req, res) => {
     res.json(posts);
 };
-// CREATE - Add a new post
-exports.createPost = (req, res) => {
-    console.log("BODY:", req.body);
-    res.json({ message: "Working", data: req.body });
+
+
+
+exports.createPost = async (req, res) => {
+    try {
+        const { name, title } = req.body;
+
+        if (!name || !title) {
+            return res.status(400).json({ message: "Name and Title are required" });
+        }
+
+        // Now 'Book' matches the constant name above
+        const newBook = new Book({ name, title });
+
+        const savedBook = await newBook.save();
+        res.status(201).json({
+            message: "Book saved successfully",
+            data: savedBook
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Error saving to database",
+            error: error.message
+        });
+    }
 };
-// exports.createPost = (req, res) => {
-//     console.log(req.body); // debug
 
-//     const { name, title } = req.body;
 
-//     if (!name || !title) {
-//         return res.status(400).json({ message: "Name and title are required" });
-//     }
 
-//     const newPost = {
-//         id: posts.length + 1,
-//         name,
-//         title
-//     };
-
-//     posts.push(newPost);
-//     res.status(201).json(newPost);
-// };
-// UPDATE - Edit a post by ID
 exports.updatePost = (req, res) => {
     const id = parseInt(req.params.id);
     const post = posts.find(p => p.id === id);
@@ -46,9 +49,9 @@ exports.updatePost = (req, res) => {
     }
 };
 
-// DELETE - Remove a post by ID
+
 exports.deletePost = (req, res) => {
     const id = parseInt(req.params.id);
-    posts = posts.filter(p => p.id !== id);
+    const posts = posts.filter(p => p.id !== id);
     res.json({ message: `Post with ID ${id} deleted` });
 };

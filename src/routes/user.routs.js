@@ -5,7 +5,7 @@ const user_controller = require("../controller/user.controller");
 
 
 routes.get('/', user_controller.getAllPosts)
-routes.post('/', user_controller.createPost);
+routes.post('/create', user_controller.createPost);
 routes.put('/:id', user_controller.updatePost);
 routes.delete('/:id', user_controller.deletePost);
 

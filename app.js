@@ -1,17 +1,21 @@
+require('dotenv').config();
 const express = require('express')
-console.log("welcome to js")
-console.log("hello world")
 const app = express();
 const route = require("./src/routes/user.routs")
-
+const user_register_route = require("./src/routes/registeruser.routs")
+const token = require("./src/middleware/jwtwebtoken")
+const cors = require('cors');
+app.use(cors());
+const connectDB = require("./db");
+app.use(express.json()); 
 
 //middleware
+connectDB();
 
-app.use('/',route)
-
-app.use('/user', route);
-
-app.listen(8000,()=>{
+const port = process.env.PORT
+app.use('/api', user_register_route); 
+app.listen(port,()=>{
     console.log("call back or app listen")
 })
+
 
